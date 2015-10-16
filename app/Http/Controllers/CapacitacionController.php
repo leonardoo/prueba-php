@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Capacitacion;
+use App\Capacitador;
+use App\Inscripcion;
 
 class CapacitacionController extends Controller
 {
@@ -16,7 +18,8 @@ class CapacitacionController extends Controller
      */
     public function index()
     {
-        //
+        $table = array("Tema", "Fecha de entrenamiento", "capacitador", "Fecha de Creacion");
+        return view('capacitacion/capacitacion/list')->with("list", Capacitacion::all())->with("table", $table);
     }
 
     /**
@@ -26,7 +29,12 @@ class CapacitacionController extends Controller
      */
     public function create()
     {
-        return view('capacitacion/capacion/create');
+        $capacitadores = Capacitador::all();
+        $select = array();
+        foreach($capacitadores as $capacitador){
+            $select[$capacitador->id] = $capacitador->name;
+        }
+        return view('capacitacion/capacitacion/create')->with("capacitadores", $select)->with("url","capacitacion");
     }
 
     /**
@@ -38,11 +46,11 @@ class CapacitacionController extends Controller
     public function store(Request $request)
     {
         $capacitacion = new Capacitacion;
-        $capacitacion->temma = $request->tema;
+        $capacitacion->tema = $request->tema;
         $capacitacion->date_training = $request->date_training;
         $capacitacion->capacitador_id = $request->capacitador;
         $capacitacion->save();
-        return redirect()->route('capacitador.create');
+        return redirect()->route('capacitacion.index');
     }
 
     /**
@@ -53,7 +61,13 @@ class CapacitacionController extends Controller
      */
     public function show($id)
     {
-        //
+        $list = Inscripcion::where("capacitacion_id", "=", $id)->get();
+        $capacitacion = Capacitacion::findOrFail($id);
+        $count = $list->count();
+
+        $table = array("Capacitacion", "Nombre", "Identificacion","Asistencia");
+        return view('capacitacion/capacitacion/inscripciones/list')->with("list", $list)->with("table", $table)
+            ->with("capacitacion",$capacitacion);
     }
 
     /**

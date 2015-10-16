@@ -18,3 +18,4 @@ Route::get('/', function () {
 Route::resource('capacitacion', 'CapacitacionController');
 Route::resource('capacitador', 'CapacitadorController');
 Route::resource('inscripcion', 'InscripcionController');
+Route::get('inscripcion/{id}/confirm', ['as' => 'inscripcion_confirm', 'uses' => 'InscripcionController@confirm']);

@@ -16,7 +16,8 @@ class CapacitadorController extends Controller
      */
     public function index()
     {
-        //
+        $table = array("Nombre", "identificacion");
+        return view('capacitacion/capacitador/list')->with("list", Capacitador::all())->with("table", $table);
     }
 
     /**
@@ -27,7 +28,7 @@ class CapacitadorController extends Controller
     public function create()
     {
         //
-        return view('capacitacion/capacitador/create');
+        return view('capacitacion/capacitador/create')->with("url", "capacitador");
     }
 
     /**
@@ -42,7 +43,7 @@ class CapacitadorController extends Controller
         $capacitador->name = $request->name;
         $capacitador->identification = $request->identification;
         $capacitador->save();
-        return redirect()->route('capacitador.create');
+        return redirect()->route('capacitador.index');
     }
 
     /**

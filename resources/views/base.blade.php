@@ -6,7 +6,10 @@
 </head>
 <body>
 <div class="container">
-    @yield('content')
+    @include('menu')
+    <section>
+        @yield('content')
+    </section>
 </div>
 </body>
 </html>

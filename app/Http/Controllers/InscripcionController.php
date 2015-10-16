@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Inscripcion;
+use App\Capacitacion;
 
 class InscripcionController extends Controller
 {
@@ -16,7 +17,8 @@ class InscripcionController extends Controller
      */
     public function index()
     {
-        //
+        $table = array("Nombre", "Identificacion", "Fecha de Inscripcion", "capacitacion");
+        return view('capacitacion/inscripcion/list')->with("list", Inscripcion::all())->with("table", $table);
     }
 
     /**
@@ -26,7 +28,19 @@ class InscripcionController extends Controller
      */
     public function create()
     {
-        return view('capacitacion/inscrpcion/create');
+        $capacitaciones = Capacitacion::all();
+        $select = array();
+        foreach($capacitaciones as $capacitacion){
+            $select[$capacitacion->id] = $capacitacion->tema;
+        }
+        return view('capacitacion/inscripcion/create')->with("capacitaciones", $select)->with("url", "inscripcion");
+    }
+
+    public function confirm($id){
+        $inscripcion = Inscripcion::findOrFail($id);
+        $inscripcion->confirmed = 1;
+        $inscripcion->save();
+        return redirect()->route('capacitacion.show',["id" => $inscripcion->capacitacion_id]);
     }
 
     /**
@@ -43,7 +57,7 @@ class InscripcionController extends Controller
         $inscripcion->inscripcion = $request->inscripcion;
         $inscripcion->capacitacion_id = $request->capacitacion;
         $inscripcion->save();
-        return redirect()->route('capacitador.create');
+        return redirect()->route('inscripcion.index');
     }
 
     /**
